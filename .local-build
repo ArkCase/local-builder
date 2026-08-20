@@ -1,0 +1,18 @@
+#!/bin/bash
+
+set -euo pipefail
+
+SRC_SSL_DIR="/etc/ssl/certs"
+SRC_FILES=(
+	"${SRC_SSL_DIR}/ca-certificates.crt"
+	"${SRC_SSL_DIR}/java/cacerts"
+)
+
+REAL_SCRIPT="$(readlink -f "${BASH_ARGV0:-${BASH_SOURCE:-${0}}}")"
+BASEDIR="$(dirname "${REAL_SCRIPT}")"
+
+LOCAL_CA_DIR="${BASEDIR}/certs"
+
+mkdir -p "${LOCAL_CA_DIR}"
+cp -vf "${SRC_FILES[@]}" "${LOCAL_CA_DIR}"
+exec act

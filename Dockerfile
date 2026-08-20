@@ -24,3 +24,9 @@ RUN export KEYRING="/etc/apt/keyrings/githubcli-archive-keyring.gpg" && \
       && \
     apt clean && \
     find /var/lib/apt/lists -type f -delete
+
+ARG TGT_SSL_DIR="/etc/ssl/certs"
+ARG TGT_CA_CERTIFICATES="${TGT_SSL_DIR}/ca-certificates.crt"
+ARG TGT_JAVA_CACERTS="${TGT_SSL_DIR}/adoptium/cacerts"
+
+RUN --mount=type=bind,target=/src ls -al /src && /src/copy-certificates /src/certs

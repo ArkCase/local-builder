@@ -1,0 +1,33 @@
+#!/bin/bash
+
+set -euo pipefail
+
+SRC_DIR="${1:-}"
+
+if [ ! -d "${SRC_DIR}" ] ; then
+	echo -e "ERROR: no certificates directory was found at [${SRC_DIR}] - won't copy the certificates"
+	exit 0
+fi
+
+TGT_SSL_DIR="/etc/ssl/certs"
+
+COPIES=(
+	"${SRC_DIR}/ca-certificates.crt:${TGT_SSL_DIR}/ca-certificates.crt"
+	"${SRC_DIR}/cacerts:${TGT_SSL_DIR}/adoptium/cacerts"
+)
+
+for COPY in "${COPIES[@]}" ; do
+	IFS=":" read SRC TGT <<< "${COPY}"
+	[ -n "${SRC}" ] || continue
+	[ -n "${TGT}" ] || continue
+	[ -f "${SRC}" ] || continue
+	echo -e "Copying [${SRC}] to [${TGT}] ..."
+	mkdir -vp "$(dirname "${TGT}")"
+	cp -v "${SRC}" "${TGT}"
+	chown root: "${TGT}"
+	chmod a=r "${TGT}"
+	echo -e "\t... copy complete!"
+	ls -l "${TGT}"
+done
+
+exit 0
