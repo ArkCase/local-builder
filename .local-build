@@ -13,6 +13,16 @@ BASEDIR="$(dirname "${REAL_SCRIPT}")"
 
 LOCAL_CA_DIR="${BASEDIR}/certs"
 
+cleanup()
+{
+	local RC=${?}
+	rm -rf "${LOCAL_CA_DIR}" &>/dev/null
+	return ${RC}
+}
+
+trap cleanup EXIT
 mkdir -p "${LOCAL_CA_DIR}"
 cp -vf "${SRC_FILES[@]}" "${LOCAL_CA_DIR}"
-exec act
+
+act
+exit ${?}
