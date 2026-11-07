@@ -24,5 +24,6 @@ trap cleanup EXIT
 mkdir -p "${LOCAL_CA_DIR}"
 cp -vf "${SRC_FILES[@]}" "${LOCAL_CA_DIR}"
 
+cd "${BASEDIR}"
 act
 exit ${?}
