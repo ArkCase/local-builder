@@ -21,6 +21,7 @@ RUN export KEYRING="/etc/apt/keyrings/githubcli-archive-keyring.gpg" && \
     apt-get -y install \
         gettext-base \
         gh \
+        tini \
       && \
     apt clean && \
     find /var/lib/apt/lists -type f -delete

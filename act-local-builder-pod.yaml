@@ -1,0 +1,45 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    app.kubernetes.io/instance: &name act-local-builder
+    app.kubernetes.io/name: *name
+  name: *name
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels: &labels
+    app.kubernetes.io/instance: &name act-local-builder
+    app.kubernetes.io/name: *name
+  name: *name
+  namespace: *name
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      <<: *labels
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        <<: *labels
+    spec:
+      containers:
+        - name: derived
+          command: [ "tini", "--", "sleep", "infinity" ]
+          image: harbor.rivera.prv/arkcase/local-builder:devel-latest
+          imagePullPolicy: Always
+        - name: small
+          command: [ "tini", "--", "sleep", "infinity" ]
+          image: ghcr.io/catthehacker/ubuntu:act-24.04
+          imagePullPolicy: Always
+        # - name: full
+        #   command: [ "tini", "--", "sleep", "infinity" ]
+        #   image: ghcr.io/catthehacker/ubuntu:full-24.04
+        #   imagePullPolicy: Always
+      restartPolicy: Always
+      imagePullSecrets:
+        - name: aws-arkcase-pull
